@@ -1,0 +1,1 @@
+Open index.html in a browser. Upload or paste resume details, then click Generate Job Resume.

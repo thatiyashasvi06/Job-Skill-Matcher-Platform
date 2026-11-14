@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JobMatch — Find your fit</title>
+<style>
+:root{--navy:#14213d;--blue:#4361ee;--cyan:#4cc9f0;--bg:#f5f7fb;--text:#20283a;--muted:#718096;--line:#e6eaf2;--green:#15966a;--red:#d9485f}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:10px 15px;background:var(--blue);color:white;font-weight:600}button.secondary{background:#eef2ff;color:#3448b5}button.ghost{background:transparent;color:#526079;border:1px solid var(--line)}
+.layout{display:flex;min-height:100vh}.sidebar{width:245px;background:#ffffff;border-right:1px solid var(--line);padding:24px 16px;position:fixed;inset:0 auto 0 0;box-shadow:8px 0 28px rgba(20,33,61,.08);overflow:hidden;transition:background .3s,color .3s,border-color .3s}.sidebar.dark{background:linear-gradient(165deg,#14213d 0%,#203a8f 38%,#3657d6 72%,#5873ff 100%);border-right:0;box-shadow:8px 0 28px rgba(20,33,61,.14)}.sidebar:before,.sidebar:after{content:"";position:absolute;opacity:0;transition:opacity .3s}.sidebar.dark:before{opacity:1;width:240px;height:240px;border-radius:50%;background:rgba(76,201,240,.16);top:-120px;right:-100px}.sidebar.dark:after{opacity:1;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.08);bottom:-90px;left:-100px}
+.brand{position:relative;z-index:1;font-size:21px;font-weight:800;color:#14213d;padding:5px 12px 28px}.brand span{color:#4361ee}.sidebar.dark .brand{color:#fff}.sidebar.dark .brand span{color:#75e6ff}.nav{position:relative;z-index:1}.navlabel{font-size:11px;text-transform:uppercase;letter-spacing:1.3px;color:#8b98b0;padding:12px}.sidebar.dark .navlabel{color:#cbd7ff}.nav button{display:flex;gap:12px;align-items:center;width:100%;text-align:left;margin:5px 0;background:transparent;color:#526079;font-weight:600;transition:.2s}.nav button.active{background:#eaf0ff;color:#4361ee;box-shadow:none}.nav button:hover{background:#f0f4ff;color:#3155d6;transform:translateX(2px)}.sidebar.dark .nav button{background:rgba(255,255,255,.05);color:#eef3ff}.sidebar.dark .nav button.active{background:linear-gradient(90deg,#ffffff 0%,#e9edff 100%);color:#3155d6;box-shadow:0 8px 18px rgba(0,0,0,.12)}.sidebar.dark .nav button:hover{background:rgba(255,255,255,.16);color:#fff}
+.theme-toggle{position:relative;z-index:2;margin-top:24px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#f8faff;display:flex;align-items:center;justify-content:space-between;gap:8px;color:#526079;font-size:13px;font-weight:700}.sidebar.dark .theme-toggle{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.16);color:#fff}.switch{width:46px;height:26px;border-radius:999px;background:#cbd5e1;padding:3px;display:flex;align-items:center;transition:.25s}.switch span{width:20px;height:20px;border-radius:50%;background:#fff;display:block;transition:.25s}.sidebar.dark .switch{background:#75e6ff}.sidebar.dark .switch span{transform:translateX(20px)}.main{margin-left:245px;width:calc(100% - 245px);padding:26px 34px 50px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}.top h1{font-size:25px;margin:0}.sub{color:var(--muted);font-size:14px;margin-top:6px}.profile{display:flex;align-items:center;gap:10px}.avatar{width:38px;height:38px;border-radius:50%;background:#e8edff;color:#3448b5;display:grid;place-items:center;font-weight:800}
+.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 4px 18px #1d35570a}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.stat{padding:20px}.stat .num{font-size:28px;font-weight:800;margin:9px 0}.muted{color:var(--muted);font-size:13px}.section{margin-top:22px}.sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.sectionhead h2{font-size:17px;margin:0}.two{display:grid;grid-template-columns:1.35fr 1fr;gap:18px}.job{display:flex;justify-content:space-between;gap:15px;padding:16px 0;border-bottom:1px solid var(--line)}.job:last-child{border:0}.companylogo{width:42px;height:42px;flex:none;border-radius:12px;background:#eef2ff;color:#4054c5;display:grid;place-items:center;font-weight:800}.jobleft{display:flex;gap:12px}.job h3{margin:0 0 5px;font-size:15px}.tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.tag{background:#f0f3f9;border-radius:20px;padding:5px 9px;font-size:11px;color:#59667b}.tag.missing{background:#fff0f1;color:#c43c52}.score{font-weight:800;color:var(--green);white-space:nowrap}.progress{height:8px;background:#edf0f6;border-radius:9px;overflow:hidden;margin-top:8px}.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:9px}
+.page{display:none}.page.active{display:block}.welcome{background:linear-gradient(115deg,#14213d 0%,#203a8f 38%,#3657d6 72%,#5873ff 100%);color:white;padding:26px;border-radius:17px;margin-bottom:18px;box-shadow:0 10px 24px rgba(54,87,214,.22);position:relative;overflow:hidden}.welcome:before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.10);right:-70px;top:-120px}.welcome:after{content:"";position:absolute;width:150px;height:150px;border-radius:50%;background:rgba(76,201,240,.16);right:90px;bottom:-105px}.welcome h2,.welcome p{position:relative;z-index:1}.welcome h2{margin:0 0 7px;font-size:22px}.welcome p{margin:0;color:#edf2ff}.uploadbox{border:2px dashed #cbd5e7;border-radius:14px;padding:30px;text-align:center;background:#fafbff}.uploadbox input{max-width:100%;margin-top:14px}.field{display:flex;flex-direction:column;gap:7px;margin:12px 0}.field input,.field select{padding:11px 12px;border:1px solid #dce2ec;border-radius:9px;background:white}.table{width:100%;border-collapse:collapse;font-size:13px}.table th,.table td{text-align:left;padding:13px;border-bottom:1px solid var(--line)}.table th{color:#758197;font-weight:600}.pill{padding:5px 9px;border-radius:20px;background:#eaf8f2;color:#13865d;font-size:11px}.empty{text-align:center;padding:35px;color:var(--muted)}
+.toast{position:fixed;right:24px;bottom:24px;background:#17243e;color:white;padding:13px 18px;border-radius:11px;box-shadow:0 8px 30px #0002;display:none;z-index:10}
+@media(max-width:900px){.sidebar{width:190px}.main{margin-left:190px;width:calc(100% - 190px);padding:22px}.grid{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}}
+.resume-preview{margin-top:20px;border:1px solid var(--line);border-radius:14px;padding:42px 52px;background:#fff;max-width:850px;line-height:1.45}.resume-header{text-align:center;border-bottom:2px solid #172b4d;padding-bottom:14px}.resume-preview h1{margin:0;font-size:30px;letter-spacing:.4px;color:var(--navy)}.resume-preview h2{font-size:14px;letter-spacing:1px;text-transform:uppercase;color:var(--navy);border-bottom:1px solid #aeb8c7;padding-bottom:5px;margin:20px 0 9px}.resume-preview .contact{color:#4d5b70;margin:8px 0 0;font-size:13px}.resume-preview .contact span{margin:0 6px}.resume-preview .resume-skills{display:flex;flex-wrap:wrap;gap:7px}.resume-preview p{margin:5px 0;font-size:14px}.resume-preview .bullet{position:relative;padding-left:16px;margin:5px 0;font-size:14px}.resume-preview .bullet:before{content:"•";position:absolute;left:2px}.resume-preview .resume-item{margin-top:10px;font-size:14px}.resume-block{page-break-inside:avoid}
+.resume-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+@media(max-width:650px){.sidebar{position:static;width:100%;height:auto;padding:12px}.layout{display:block}.brand{padding:5px 8px 10px}.nav{display:flex;overflow:auto}.navlabel{display:none}.nav button{white-space:nowrap;width:auto;padding:9px}.main{margin:0;width:100%;padding:17px}.top{align-items:flex-start}.top h1{font-size:21px}.grid{gap:9px}.stat{padding:14px}.stat .num{font-size:23px}.profile .muted{display:none}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <div class="brand">Job<span>Match</span> ✦</div>
+  <div class="navlabel">Workspace</div>
+  <nav class="nav">
+    <button class="active" data-page="overview">▦ Overview</button>
+    <button data-page="jobs">⌕ Find Jobs</button>
+    <button data-page="resume">▤ My Resume</button>
+    <button data-page="applications">▣ Applications</button>
+    <button data-page="courses">◇ Skill Courses</button>
+    <button data-page="recruiter">♙ Recruiter Search</button>
+  </nav>
+  <div class="navlabel" style="margin-top:20px">Account</div>
+  <nav class="nav"><button data-page="profile">⚙ Profile & Settings</button></nav>
+  <button class="theme-toggle" id="sidebarThemeToggle" type="button" aria-label="Toggle sidebar dark mode"><span id="themeLabel">☀ Light mode</span><span class="switch"><span></span></span></button>
+</aside>
+<main class="main">
+  <header class="top"><div><h1 id="pageTitle">Overview</h1><div class="sub">Discover opportunities that match your skills.</div></div><div class="profile"><div class="avatar">Y</div><div><b id="userName">Yashasvi</b><div class="muted">Candidate account</div></div></div></header>
+  <section class="page active" id="overview">
+    <div class="welcome"><h2>Find the role that fits you.</h2><p>Upload your resume, discover skill gaps and move closer to your next opportunity.</p></div>
+    <div class="grid">
+      <div class="panel stat"><div class="muted">Jobs available</div><div class="num" id="jobCount">6</div><div class="muted">Across different roles</div></div>
+      <div class="panel stat"><div class="muted">Applications</div><div class="num" id="appCount">0</div><div class="muted">Your submitted applications</div></div>
+      <div class="panel stat"><div class="muted">Resume match</div><div class="num" id="matchStat">—</div><div class="muted">Based on uploaded resume</div></div>
+      <div class="panel stat"><div class="muted">Daily applications</div><div class="num" id="dailyStat">10</div><div class="muted">Remaining today</div></div>
+    </div>
+    <div class="two section">
+      <div class="panel"><div class="sectionhead"><h2>Recommended jobs</h2><button class="secondary" onclick="showPage('jobs')">View all</button></div><div id="recommended"></div></div>
+      <div class="panel"><div class="sectionhead"><h2>Get started</h2></div><p class="muted">Upload a resume to identify your skills and calculate job match scores.</p><button onclick="showPage('resume')">Upload resume →</button><div class="section" style="border-top:1px solid var(--line);padding-top:16px"><b>How matching works</b><p class="muted">We compare the skills detected in your resume with the skills requested by each job. Missing skills are highlighted so you can plan what to learn next.</p></div></div>
+    </div>
+  </section>
+  <section class="page" id="jobs"><div class="panel"><div class="sectionhead"><h2>Explore jobs</h2><input id="jobSearch" placeholder="Search title or skill..." style="padding:10px;border:1px solid var(--line);border-radius:9px" oninput="renderJobs()"></div><div id="jobList"></div></div></section>
+  <section class="page" id="resume">
+    <div class="panel"><div class="sectionhead"><h2>Resume analysis</h2><span class="pill">Private demo storage</span></div>
+      <div class="uploadbox"><div style="font-size:30px">⇧</div><b>Upload your resume or details file</b><p class="muted">Upload a PDF, DOCX or TXT file. The platform reads the content, detects details and generates a clean job resume automatically.</p><input type="file" id="resumeFile" accept=".pdf,.doc,.docx,.txt" onchange="fileChosen()"></div>
+      <div class="field"><label><b>Extracted resume text</b></label><textarea id="resumeText" rows="7" style="padding:12px;border:1px solid #dce2ec;border-radius:9px;resize:vertical" placeholder="Upload a file or paste resume content here..."></textarea></div>
+      <div class="resume-actions"><button onclick="analyzeResume()">Analyze my skills</button><button class="secondary" onclick="generateResume()">Generate Job Resume</button></div>
+      <div id="resumeResult" class="section"></div>
+      <div id="generatedResume"></div>
+    </div>
+  </section>
+  <section class="page" id="applications"><div class="panel"><div class="sectionhead"><h2>Application tracker</h2><span class="muted">Maximum 10 applications per day</span></div><div id="applicationList"></div></div></section>
+  <section class="page" id="courses"><div class="panel"><div class="sectionhead"><h2>Recommended learning</h2></div><p class="muted">Courses are suggested for skills that appear in job requirements but not in your resume.</p><div id="courseList"></div></div></section>
+  <section class="page" id="recruiter"><div class="panel"><div class="sectionhead"><h2>Candidate directory</h2></div><p class="muted">Sample recruiter view. Search the demo candidate profiles by skill.</p><input id="candidateSearch" placeholder="Search candidate or skill..." oninput="renderCandidates()" style="padding:11px;border:1px solid var(--line);border-radius:9px;width:min(100%,400px)"><div id="candidateList" class="section"></div></div></section>
+  <section class="page" id="profile"><div class="panel"><h2>Profile & Settings</h2><div class="field"><label>Your name</label><input id="nameInput" value="Yashasvi"></div><div class="field"><label>Email</label><input id="emailInput" type="email" placeholder="you@example.com"></div><button onclick="saveProfile()">Save profile</button><p class="muted">This standalone version stores demo profile information in this browser only.</p></div></section>
+</main>
+</div><div class="toast" id="toast"></div>
+<script>
+const jobs=[
+{id:1,title:"Junior Python Developer",company:"NexaTech",location:"Hyderabad · Hybrid",type:"Full-time",skills:["Python","SQL","Git","REST API"],level:"Entry level"},
+{id:2,title:"Data Analyst",company:"BrightMetrics",location:"Remote · India",type:"Full-time",skills:["Python","SQL","Excel","Power BI"],level:"Entry level"},
+{id:3,title:"Frontend Developer Intern",company:"PixelWorks",location:"Remote",type:"Internship",skills:["HTML","CSS","JavaScript","React"],level:"Internship"},
+{id:4,title:"Machine Learning Intern",company:"AIVista",location:"Bengaluru · Hybrid",type:"Internship",skills:["Python","Machine Learning","Pandas","Scikit-learn"],level:"Internship"},
+{id:5,title:"Java Developer Trainee",company:"CodeBridge",location:"Chennai · On-site",type:"Full-time",skills:["Java","OOP","SQL","Spring Boot"],level:"Entry level"},
+{id:6,title:"Business Analyst",company:"NextWave",location:"Remote · India",type:"Full-time",skills:["Excel","SQL","Communication","Power BI"],level:"Entry level"}
+];
+const courses={"Python":"https://www.learnpython.org/","SQL":"https://www.khanacademy.org/computing/computer-programming/sql","Git":"https://git-scm.com/doc","REST API":"https://www.freecodecamp.org/learn/","Excel":"https://support.microsoft.com/excel","Power BI":"https://learn.microsoft.com/training/powerplatform/power-bi/","HTML":"https://developer.mozilla.org/en-US/docs/Learn/HTML","CSS":"https://developer.mozilla.org/en-US/docs/Learn/CSS","JavaScript":"https://javascript.info/","React":"https://react.dev/learn","Machine Learning":"https://www.kaggle.com/learn/intro-to-machine-learning","Pandas":"https://www.kaggle.com/learn/pandas","Scikit-learn":"https://scikit-learn.org/stable/tutorial/index.html","Java":"https://dev.java/learn/","OOP":"https://www.geeksforgeeks.org/object-oriented-programming-oops-concept-in-java/","Spring Boot":"https://spring.io/guides","Communication":"https://www.coursera.org/learn/wharton-communication-skills"};
+let skills=JSON.parse(localStorage.getItem("jm_skills")||"[]"),apps=JSON.parse(localStorage.getItem("jm_apps")||"[]");
+function save(){localStorage.setItem("jm_skills",JSON.stringify(skills));localStorage.setItem("jm_apps",JSON.stringify(apps))}
+function toast(s){let t=document.getElementById("toast");t.textContent=s;t.style.display="block";setTimeout(()=>t.style.display="none",2600)}
+function showPage(p){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(p).classList.add("active");document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===p));document.getElementById("pageTitle").textContent=({overview:"Overview",jobs:"Find Jobs",resume:"My Resume",applications:"Applications",courses:"Skill Courses",recruiter:"Recruiter Search",profile:"Profile & Settings"})[p];if(p==="jobs")renderJobs();if(p==="applications")renderApps();if(p==="courses")renderCourses();if(p==="recruiter")renderCandidates()}
+document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+function score(job){if(!skills.length)return 0;return Math.round(job.skills.filter(s=>skills.map(x=>x.toLowerCase()).includes(s.toLowerCase())).length/job.skills.length*100)}
+function jobCard(j){let missing=j.skills.filter(s=>!skills.map(x=>x.toLowerCase()).includes(s.toLowerCase()));return `<div class="job"><div class="jobleft"><div class="companylogo">${j.company[0]}</div><div><h3>${j.title}</h3><div class="muted">${j.company} · ${j.location} · ${j.type}</div><div class="tags">${j.skills.map(s=>`<span class="tag ${missing.includes(s)?"missing":""}">${s}</span>`).join("")}</div></div></div><div style="text-align:right"><div class="score">${skills.length?score(j)+"% match":"New"}</div><div class="muted">${j.level}</div><button style="margin-top:10px" onclick="apply(${j.id})">Apply</button></div></div>`}
+function renderJobs(){let q=(document.getElementById("jobSearch")?.value||"").toLowerCase();document.getElementById("jobList").innerHTML=jobs.filter(j=>(j.title+j.company+j.skills.join(" ")).toLowerCase().includes(q)).map(jobCard).join("")}
+function renderHome(){document.getElementById("jobCount").textContent=jobs.length;document.getElementById("appCount").textContent=apps.length;document.getElementById("matchStat").textContent=skills.length?Math.round(jobs.reduce((a,j)=>a+score(j),0)/jobs.length)+"%":"—";document.getElementById("dailyStat").textContent=Math.max(0,10-apps.filter(a=>a.date===new Date().toDateString()).length);document.getElementById("recommended").innerHTML=[...jobs].sort((a,b)=>score(b)-score(a)).slice(0,3).map(jobCard).join("")}
+function escapeHtml(v){return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function analyzeResume(){
+ let text=document.getElementById("resumeText").value;
+ if(!text.trim()){toast("Upload a file or add resume text first.");return}
+ let all=[...new Set(jobs.flatMap(j=>j.skills))];
+ skills=all.filter(s=>new RegExp("\\b"+s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b","i").test(text));
+ save();
+ let el=document.getElementById("resumeResult");
+ el.innerHTML=`<div class="sectionhead"><h2>Detected skills</h2><b style="color:var(--green)">${skills.length} found</b></div>${skills.length?`<div class="tags">${skills.map(s=>`<span class="tag">${escapeHtml(s)}</span>`).join("")}</div>`:"<p class='muted'>No sample-job skills were detected, but you can still generate a resume from the uploaded content.</p>"}<p class="muted" style="margin-top:15px">Your job match scores have been updated.</p>`;
+ renderHome();toast("Resume analyzed");
+}
+async function fileChosen(){
+ let f=document.getElementById("resumeFile").files[0];if(!f)return;
+ toast("Reading "+f.name+"...");
+ try{
+   let text="";
+   if(f.name.toLowerCase().endsWith(".txt")) text=await f.text();
+   else if(f.name.toLowerCase().endsWith(".docx")){
+     if(!window.mammoth) throw new Error("DOCX reader could not load.");
+     const result=await mammoth.extractRawText({arrayBuffer:await f.arrayBuffer()}); text=result.value;
+   }else if(f.name.toLowerCase().endsWith(".pdf")){
+     if(!window.pdfjsLib) throw new Error("PDF reader could not load.");
+     pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+     const pdf=await pdfjsLib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise;
+     let pages=[];for(let i=1;i<=pdf.numPages;i++){let pg=await pdf.getPage(i);let c=await pg.getTextContent();pages.push(c.items.map(x=>x.str).join(" "));}
+     text=pages.join("\n");
+   }else if(f.name.toLowerCase().endsWith(".doc")) throw new Error("Old .DOC files are not supported in the browser. Please save as DOCX, PDF or TXT.");
+   document.getElementById("resumeText").value=text.trim();
+   toast("File content extracted. Generating is now ready.");
+   analyzeResume();
+ }catch(e){console.error(e);toast(e.message||"Could not read this file.");}
+}
+function escapeRegExp(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}
+function extractResumeData(text){
+ const clean=text.replace(/\r/g,"").trim();
+ const lines=clean.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+ const email=(clean.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)||[""])[0];
+ const phone=(clean.match(/(?:\+?\d[\d\s-]{8,}\d)/)||[""])[0];
+ let first=lines[0]||"Your Name";
+ // If name, phone and email are on the same line, remove the contact details.
+ let name=first.replace(/[|,]\s*/g," ").replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/ig,"").replace(/(?:\+?\d[\d\s-]{8,}\d)/g,"").trim();
+ if(!name || /^(resume|curriculum vitae)$/i.test(name)) name=lines.find(x=>x!==first&&x.length<60)||"Your Name";
+ const known=[...new Set([...jobs.flatMap(j=>j.skills),...skills])];
+ const found=known.filter(x=>new RegExp("\\b"+escapeRegExp(x)+"\\b","i").test(clean));
+ return {name,email,phone,found,lines,text:clean};
+}
+const resumeHeadings=["Objective","Professional Summary","Summary","Profile","Education","Skills","Projects","Experience","Work Experience","Internship","Internships","Certifications","Certification","Achievements","Awards","Languages","Publications","Activities","Technical Skills"];
+function normalizeResumeText(text){
+ let t=text.replace(/\r/g,"\n").replace(/[\t]+/g," ");
+ // Put common section headings onto their own lines, even when extracted from a PDF as one paragraph.
+ const heads=resumeHeadings.map(escapeRegExp).join("|");
+ const re=new RegExp("\\s+(?=(?:"+heads+")\\s*(?:\\n|\\s{2,}|$))","ig");
+ t=t.replace(re,"\n");
+ t=t.replace(new RegExp("\\b("+heads+")\\s+(?=[A-Z0-9•–—-])","ig"),"\n$1\n");
+ return t.replace(/\n{3,}/g,"\n\n").trim();
+}
+function parseResumeSections(text){
+ const t=normalizeResumeText(text);
+ const lines=t.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+ const sections=[], headingSet=resumeHeadings.map(x=>x.toLowerCase());
+ let current=null;
+ for(const line of lines){
+   const plain=line.replace(/[:\s]+$/,'').toLowerCase();
+   const idx=headingSet.indexOf(plain);
+   if(idx>=0){ current={title:resumeHeadings[idx],content:[]}; sections.push(current); }
+   else if(current) current.content.push(line);
+ }
+ return sections.map(s=>({title:s.title,content:s.content.join("\n").trim()})).filter(s=>s.content);
+}
+function splitContactAndName(text){
+ const first=(text.split(/\n+/).find(x=>x.trim())||"Your Name").trim();
+ const email=(text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)||[""])[0];
+ const phone=(text.match(/(?:\+?\d[\d\s-]{8,}\d)/)||[""])[0];
+ let name=first;
+ if(email) name=name.replace(email,""); if(phone) name=name.replace(phone,"");
+ name=name.replace(/\b(?:LinkedIn|GitHub|LeetCode)\s*:?\s*(?:https?:\/\/|www\.)?\S+/ig,"").replace(/[|,]+/g," ").trim();
+ if(name.length>70) name=name.split(/\s{2,}|\s+(?:Hyderabad|India|Andhra Pradesh)\b/i)[0].trim();
+ return {name:name||"Your Name",email,phone,first};
+}
+function formatSectionContent(content){
+ const lines=content.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+ return lines.map(line=>{
+   let safe=escapeHtml(line);
+   if(/^[–—•-]\s*/.test(line)) return `<div class="bullet">${safe.replace(/^[–—•-]\s*/,"")}</div>`;
+   // Project/education title lines get stronger visual hierarchy.
+   if(line.length<120 && /(?:\||CGPA|Percentage|Expected Graduation|Bachelor|Intermediate|Secondary|Certificate)/i.test(line)) return `<div class="resume-item"><b>${safe}</b></div>`;
+   return `<p>${safe}</p>`;
+ }).join("");
+}
+function generateResume(){
+ const text=document.getElementById("resumeText").value.trim();
+ if(!text){toast("Upload a file or add resume text first.");return}
+ analyzeResume();
+ const d=extractResumeData(text), c=splitContactAndName(text);
+ const sections=parseResumeSections(text);
+ const links=[];
+ const linkMatches=text.match(/(?:LinkedIn|GitHub|LeetCode)\s*:?\s*(?:https?:\/\/)?[^\s|,]+/ig)||[];
+ linkMatches.forEach(x=>links.push(x.trim()));
+ const contact=[c.phone,c.email,...links].filter(Boolean).map(escapeHtml).join(" <span>•</span> ");
+ const renderedSections=sections.map(sec=>`<section class="resume-block"><h2>${escapeHtml(sec.title)}</h2><div class="resume-section-content">${formatSectionContent(sec.content)}</div></section>`).join("");
+ const fallbackSkills=d.found.length?`<section class="resume-block"><h2>Skills</h2><div class="resume-skills">${d.found.map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join("")}</div></section>`:"";
+ document.getElementById("generatedResume").innerHTML=`<div class="resume-preview" id="resumePreview">
+ <header class="resume-header"><h1>${escapeHtml(c.name)}</h1><div class="contact">${contact||"Contact details from uploaded file"}</div></header>
+ ${renderedSections||fallbackSkills||`<section class="resume-block"><h2>Resume Details</h2><div class="resume-section-content">${formatSectionContent(normalizeResumeText(text))}</div></section>`}
+ </div><div class="resume-actions"><button onclick="printResume()">Download / Save as PDF</button></div>`;
+ document.getElementById("generatedResume").scrollIntoView({behavior:"smooth",block:"start"});
+ toast("Full resume generated in template format");
+}
+function printResume(){
+ const content=document.getElementById("resumePreview").outerHTML;
+ const w=window.open("","_blank");w.document.write(`<html><head><title>Resume</title><style>body{font-family:Arial,sans-serif;padding:40px;color:#20283a}.resume-preview{max-width:800px;margin:auto;line-height:1.45}.resume-header{text-align:center;border-bottom:2px solid #20283a;padding-bottom:12px}.resume-preview h1{font-size:28px;margin:0}.resume-preview h2{font-size:14px;text-transform:uppercase;letter-spacing:1px;margin:20px 0 8px;border-bottom:1px solid #bbb;padding-bottom:4px}.contact{color:#555;margin:8px 0 0;font-size:12px}.resume-preview p,.bullet,.resume-item{font-size:13px;margin:5px 0}.bullet{padding-left:14px}.tag{display:inline-block;background:#f0f3f9;border-radius:14px;padding:5px 9px;margin:3px;font-size:12px}</style></head><body>${content}<script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close();
+}
+function apply(id){let today=new Date().toDateString(),count=apps.filter(a=>a.date===today).length;if(apps.some(a=>a.id===id)){toast("You have already applied to this demo job.");return}if(count>=10){toast("Daily application limit reached.");return}let j=jobs.find(x=>x.id===id);apps.push({id,title:j.title,company:j.company,date:today,status:"Submitted"});save();renderHome();toast("Application submitted in this demo!")}
+function renderApps(){document.getElementById("applicationList").innerHTML=apps.length?`<table class="table"><thead><tr><th>Role</th><th>Company</th><th>Applied on</th><th>Status</th></tr></thead><tbody>${apps.map(a=>`<tr><td>${a.title}</td><td>${a.company}</td><td>${a.date}</td><td><span class="pill">${a.status}</span></td></tr>`).join("")}</tbody></table>`:"<div class='empty'>No applications yet. Explore jobs and apply to roles that interest you.</div>"}
+function renderCourses(){let missing=[...new Set(jobs.flatMap(j=>j.skills))].filter(s=>!skills.includes(s));document.getElementById("courseList").innerHTML=missing.length?missing.map(s=>`<div class="job"><div><b>${s}</b><div class="muted">Recommended skill to improve your job match</div></div><a href="${courses[s]||"#"}" target="_blank" rel="noopener">Learn ↗</a></div>`).join(""):"<div class='empty'>Great! No skill gaps found in the sample job list.</div>"}
+const candidates=[{name:"Ananya R",skills:["Python","SQL","Pandas","Power BI"]},{name:"Rahul K",skills:["Java","Spring Boot","SQL","Git"]},{name:"Meera S",skills:["HTML","CSS","JavaScript","React"]},{name:"Arjun P",skills:["Python","Machine Learning","Scikit-learn"]}];
+function renderCandidates(){let q=(document.getElementById("candidateSearch")?.value||"").toLowerCase();let list=candidates.filter(c=>(c.name+c.skills.join(" ")).toLowerCase().includes(q));document.getElementById("candidateList").innerHTML=list.length?list.map(c=>`<div class="job"><div><b>${c.name}</b><div class="tags">${c.skills.map(s=>`<span class="tag">${s}</span>`).join("")}</div></div><span class="pill">Demo profile</span></div>`).join(""):"<div class='empty'>No matching demo candidates.</div>"}
+function saveProfile(){let n=document.getElementById("nameInput").value.trim()||"Candidate";document.getElementById("userName").textContent=n;localStorage.setItem("jm_name",n);toast("Profile saved")}
+function applySidebarTheme(mode){
+ const sidebar=document.querySelector('.sidebar');
+ const label=document.getElementById('themeLabel');
+ const dark=mode==='dark';
+ sidebar.classList.toggle('dark',dark);
+ label.textContent=dark?'🌙 Dark mode':'☀ Light mode';
+ localStorage.setItem('jm_sidebar_theme',dark?'dark':'light');
+}
+const savedSidebarTheme=localStorage.getItem('jm_sidebar_theme')||'light';
+applySidebarTheme(savedSidebarTheme);
+document.getElementById('sidebarThemeToggle').addEventListener('click',()=>{
+ applySidebarTheme(document.querySelector('.sidebar').classList.contains('dark')?'light':'dark');
+});
+document.getElementById("userName").textContent=localStorage.getItem("jm_name")||"Yashasvi";document.getElementById("nameInput").value=localStorage.getItem("jm_name")||"Yashasvi";renderHome();
+</script>
+</body></html>
